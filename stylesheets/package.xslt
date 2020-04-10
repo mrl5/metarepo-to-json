@@ -33,9 +33,10 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:text>,"versions":[</xsl:text>
     <xsl:for-each select="$node/version">
         <xsl:variable name="v" select="current()/@id"/>
-        <xsl:text>"</xsl:text>
+        <xsl:text>{"version":"</xsl:text>
         <xsl:value-of select="$v"/>
         <xsl:text>"</xsl:text>
+        <xsl:text>,"cpes":[]}</xsl:text>
         <xsl:if test="position()!=last()">
             <xsl:text>,</xsl:text>
         </xsl:if>

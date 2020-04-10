@@ -29,8 +29,21 @@
     "versions": {
       "type": "array",
       "items": {
-        "type": "string",
-        "description": "package version"
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "description": "package version"
+          },
+          "cpes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "NVD CPE - structured naming scheme for information technology systems, software, and packages"
+            }
+          }
+        },
+        "required": ["version", "cpes"]
       }
     }
   },
