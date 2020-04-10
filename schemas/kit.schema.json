@@ -1,0 +1,32 @@
+{
+  "$id": "https://github.com/mrl5/metarepo-to-json/blob/master/kit.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "kit",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "kit name"
+    },
+    "branches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "branch name"
+          },
+          "catpkgs":{
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": ["name", "catpkgs"]
+      }
+    }
+  },
+  "required": ["name", "branches"]
+}
