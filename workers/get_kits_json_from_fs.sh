@@ -6,6 +6,7 @@ JQ="/usr/bin/jq"
 
 metarepo_dir="${DEFAULT_METAREPO_DIR}"
 kitinfo="${metarepo_dir}/metadata/kit-info.json"
+kitsha1="${metarepo_dir}/metadata/kit-sha1.json"
 
 print_help() {
     echo "$(tput bold)Usage:$(tput sgr0) $(basename "$0") metarepo_dir"
@@ -29,11 +30,12 @@ exitOnMalformedRepo() {
     local predictate_key="release_defs"
     local errmsg="Looks like ${repo} is not a metarepo dir. Aborting"
 
-    if [ ! -d "${gitdir}" ] || [ ! -f ${kitinfo} ] || [ ! -f ${version} ]; then
+    if [ ! -d "${gitdir}" ] || [ ! -f "${kitinfo}" ] || [ ! -f "${kitsha1}" ] || [ ! -f "${version}" ]; then
         echo ${errmsg} && exit 1
     fi
 
-    "${JQ}" -cre ".${predictate_key}" "${kitinfo}" >/dev/null
+    "${JQ}" -cre ".${predictate_key}" "${kitinfo}" >/dev/null &&
+        "${JQ}" -cre '.' "${kitsha1}" >/dev/null
     if [ $? -ne 0 ]; then
         echo ${errmsg} && exit 1
     fi
