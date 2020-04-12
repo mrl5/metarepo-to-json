@@ -1,0 +1,102 @@
+#!/usr/bin/env python3
+
+import json
+from os import path
+from .ikits import KitsInterface
+
+HUB = None
+
+
+def __init__(hub):
+    global HUB
+    HUB = hub
+
+
+class KitsFromFileSystem(KitsInterface):
+    def __init__(self, metarepo_dir=None):
+        global HUB
+        self.hub = HUB
+        self.metarepo_dir = metarepo_dir if metarepo_dir is not None else self.hub.OPT.metarepo2json.metarepo_dir
+        self.kitinfo_path = None
+        self.kitsha1_path = None
+        self.kitinfo = None
+        self.kitsha1 = None
+        self.kits = []
+
+    def _set_kitinfo_path(self):
+        self.kitinfo_path = path.join(
+                self.metarepo_dir, self.hub.OPT.metarepo2json.kitinfo_subpath)
+
+    def _set_kitsha1_path(self):
+        self.kitsha1_path = path.join(
+                self.metarepo_dir, self.hub.OPT.metarepo2json.kitsha1_subpath)
+
+    def _load_data_source(self):
+        with open(self.kitinfo_path) as f:
+            self.kitinfo = json.load(f)
+        with open(self.kitsha1_path) as f:
+            self.kitsha1 = json.load(f)
+
+    def _is_repo_structure_valid(self):
+        is_valid = False
+        try:
+            is_valid = (
+                path.isdir(path.join(self.metarepo_dir, ".git"))
+                and path.isfile(self.kitinfo_path)
+                and path.isfile(self.kitsha1_path)
+                and path.isfile(
+                    path.join(self.metarepo_dir, self.hub.OPT.metarepo2json.version_subpath)
+                )
+            )
+        except Exception:
+            is_valid = False
+        return is_valid
+
+    def _is_repo_corrupted(self):
+        is_corrupted = True
+        try:
+            self._load_data_source()
+            is_corrupted = (
+                self.hub.OPT.metarepo2json.releases_key not in self.kitinfo or not self.kitsha1
+            )
+        except Exception:
+            is_corrupted = True
+        return is_corrupted
+
+    def _get_kit_dict(self, kit, branches):
+        b = list(
+            map(
+                lambda x: {"name": x, "catpkgs": [], "sha1": self.kitsha1[kit][x]},
+                branches,
+            )
+        )
+        return {"name": kit, "branches": b}
+
+    def load_data_source(self, path=None):
+        if path is not None:
+            self.metarepo_dir = path
+        self._set_kitinfo_path()
+        self._set_kitsha1_path()
+        if not self._is_repo_structure_valid():
+            raise InvalidMetarepoStructureError("Invalid meta-repo structure")
+        if self._is_repo_corrupted():
+            raise CorruptedMetarepoError("Corrupted meta-repo content")
+
+    def get_kits_data(self):
+        for kit, branches in self.kitinfo[self.hub.OPT.metarepo2json.releases_key].items():
+            self.kits.append(self._get_kit_dict(kit, branches))
+        return self.kits
+
+
+class InvalidMetarepoStructureError(OSError):
+    def __init__(self, msg):
+        global HUB
+        self.hub = HUB
+        self.msg = msg
+
+
+class CorruptedMetarepoError(KeyError):
+    def __init__(self, msg):
+        global HUB
+        self.hub = HUB
+        self.msg = msg

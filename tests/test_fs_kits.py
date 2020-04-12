@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import pytest
 import json
+import pop.hub
 from jsonschema import validate
 from os import path
 from pathlib import Path
-from metarepo2json.kits import kits_fs
-from metarepo2json import config
+from .tests_conf import config as conf
 from .mocks.metadata.kit_info import KIT_INFO as kitinfo_mock
 from .mocks.metadata.kit_sha1 import KIT_SHA1 as kitsha1_mock
 
-KitsFromFileSystem = kits_fs.KitsFromFileSystem
-conf = config.CONFIG
+hub = pop.hub.Hub()
+hub.pop.sub.add(dyne_name="metarepo2json", omit_class=False)
 
 FILE_DIR = path.dirname(path.realpath(__file__))
 SCHEMAS_PATH = path.join(path.dirname(FILE_DIR), conf["schemas"]["SCHEMAS_DIR"])
+
+KitsFromFileSystem = hub.metarepo2json.kits_fs.KitsFromFileSystem
 
 
 def mkdirs(tmpdir, subdirs):
@@ -51,57 +52,50 @@ def stub_metarepos(tmp_path_factory):
     mkdirs(metarepos["invalid_metarepo"], ["kits", "metadata"])
     mkdirs(metarepos["corrupted_metarepo"], [".git", "kits", "metadata"])
     touch(metarepos["valid_metarepo"], [
-        conf["metarepo"]["KITINFO_SUBPATH"],
-        conf["metarepo"]["KITSHA1_SUBPATH"],
-        conf["metarepo"]["VERSION_SUBPATH"]
+        hub.OPT.metarepo2json.kitinfo_subpath,
+        hub.OPT.metarepo2json.kitsha1_subpath,
+        hub.OPT.metarepo2json.version_subpath
     ])
     touch(metarepos["corrupted_metarepo"], [
-        conf["metarepo"]["KITINFO_SUBPATH"],
-        conf["metarepo"]["KITSHA1_SUBPATH"],
-        conf["metarepo"]["VERSION_SUBPATH"]
+        hub.OPT.metarepo2json.kitinfo_subpath,
+        hub.OPT.metarepo2json.kitsha1_subpath,
+        hub.OPT.metarepo2json.version_subpath
     ])
-    write([metarepos["valid_metarepo"]/conf["metarepo"]["KITINFO_SUBPATH"]],
+    write([metarepos["valid_metarepo"]/hub.OPT.metarepo2json.kitinfo_subpath],
           json.dumps(kitinfo_mock))
-    write([metarepos["valid_metarepo"]/conf["metarepo"]["KITSHA1_SUBPATH"]],
+    write([metarepos["valid_metarepo"]/hub.OPT.metarepo2json.kitsha1_subpath],
           json.dumps(kitsha1_mock))
     write([
-        metarepos["corrupted_metarepo"]/conf["metarepo"]["KITINFO_SUBPATH"],
-        metarepos["corrupted_metarepo"]/conf["metarepo"]["KITSHA1_SUBPATH"],
-        metarepos["corrupted_metarepo"]/conf["metarepo"]["VERSION_SUBPATH"],
+        metarepos["corrupted_metarepo"]/hub.OPT.metarepo2json.kitinfo_subpath,
+        metarepos["corrupted_metarepo"]/hub.OPT.metarepo2json.kitsha1_subpath,
+        metarepos["corrupted_metarepo"]/hub.OPT.metarepo2json.version_subpath,
         ], "{}")
     return metarepos
 
 
 @pytest.fixture(scope="function")
 def fskit_valid_repo(stub_metarepos):
-    fskit = kits_fs.KitsFromFileSystem(stub_metarepos["valid_metarepo"])
+    fskit = KitsFromFileSystem(stub_metarepos["valid_metarepo"])
     return fskit
 
 
 @pytest.fixture(scope="function")
 def fskit_invalid_repo(stub_metarepos):
-    fskit = kits_fs.KitsFromFileSystem(stub_metarepos["invalid_metarepo"])
+    fskit = KitsFromFileSystem(stub_metarepos["invalid_metarepo"])
     return fskit
 
 
 @pytest.fixture(scope="function")
 def fskit_corrupted_repo(stub_metarepos):
-    fskit = kits_fs.KitsFromFileSystem(stub_metarepos["corrupted_metarepo"])
+    fskit = KitsFromFileSystem(stub_metarepos["corrupted_metarepo"])
+    print(fskit.metarepo_dir)
     return fskit
 
 
-def test_metarepo_checkers(fskit_valid_repo, fskit_invalid_repo, fskit_corrupted_repo):
-    assert fskit_valid_repo._is_repo_structure_valid() is True
-    assert fskit_valid_repo._is_repo_corrupted() is False
-    assert fskit_invalid_repo._is_repo_structure_valid() is False
-    assert fskit_corrupted_repo._is_repo_structure_valid() is True
-    assert fskit_corrupted_repo._is_repo_corrupted() is True
-
-
 def test_load_data_source(fskit_invalid_repo, fskit_corrupted_repo):
-    with pytest.raises(fskit_invalid_repo.InvalidMetarepoStructureError):
+    with pytest.raises(hub.metarepo2json.kits_fs.InvalidMetarepoStructureError):
         fskit_invalid_repo.load_data_source()
-    with pytest.raises(fskit_corrupted_repo.CorruptedMetarepoError):
+    with pytest.raises(hub.metarepo2json.kits_fs.CorruptedMetarepoError):
         fskit_corrupted_repo.load_data_source()
 
 

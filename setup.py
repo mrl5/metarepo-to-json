@@ -17,7 +17,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: POSIX :: Linux",
     ],
-    python_requires='>=3.7',
+    python_requires=">=3.7",
     install_requires=[],
     packages=setuptools.find_packages()
 )

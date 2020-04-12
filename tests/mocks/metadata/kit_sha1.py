@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 KIT_SHA1 = {
     "browser-kit": {
         "1.4-release": "3e70e3c72944debbcb746ba611fc177cda34ff2d"

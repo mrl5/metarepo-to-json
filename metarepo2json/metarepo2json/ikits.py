@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import abc
 
 
 class KitsInterface(metaclass=abc.ABCMeta):
+    # todo: add to hub
     """
     https://realpython.com/python-interface/#using-abstract-method-declaration
     """
@@ -19,7 +19,7 @@ class KitsInterface(metaclass=abc.ABCMeta):
         )
 
     @abc.abstractmethod
-    def load_data_source(self):
+    def load_data_source(self, path):
         """Load in the data set"""
         raise NotImplementedError
 

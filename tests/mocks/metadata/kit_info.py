@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 KIT_INFO = {
     "kit_order": [
         "core-kit",
