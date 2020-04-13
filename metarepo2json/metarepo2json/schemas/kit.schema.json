@@ -17,14 +17,18 @@
             "type": "string",
             "description": "branch name"
           },
-          "catpkgs":{
+          "catpkgs": {
             "type": "array",
             "items": {
               "type": "object"
+            },
+            "sha1": {
+              "type": "string",
+              "description": "current revision of branch"
             }
           }
         },
-        "required": ["name", "catpkgs"]
+        "required": ["name", "catpkgs", "sha1"]
       }
     }
   },
