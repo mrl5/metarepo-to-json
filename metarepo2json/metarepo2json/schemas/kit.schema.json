@@ -8,6 +8,10 @@
       "type": "string",
       "description": "kit name"
     },
+    "type": {
+      "type": "string",
+      "description": "release type (e.g. indy, auto)"
+    },
     "branches": {
       "type": "array",
       "items": {
@@ -26,11 +30,15 @@
               "type": "string",
               "description": "current revision of branch"
             }
+          },
+          "stability": {
+            "type": "string",
+            "description": "branch stability (e.g. prime, beta)"
           }
         },
-        "required": ["name", "catpkgs", "sha1"]
+        "required": ["name", "catpkgs", "sha1", "stability"]
       }
     }
   },
-  "required": ["name", "branches"]
+  "required": ["name", "branches", "type"]
 }

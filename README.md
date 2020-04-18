@@ -17,25 +17,16 @@ source "${VENV_DIR}/bin/activate"
 ```
 cd metarepo-to-json/
 python3 setup.py install
-git submodule update --init --recursive
 ```
-4. to double check if everything is in place you can check symlinks:
-```
-ls -l metarepo2json/ | grep pkgtools
-cd metarepo2json/pkgtools/
-pwd
-pwd -P
-cd ../../
-```
-5. **Export PYTHONPATH**:
+4. **Export PYTHONPATH**:
 ```
 export PYTHONPATH=./
 ```
-6. RFTM :D
+5. RTFM :D
 ```
 python3 scripts/get_kits_json.py --help
 ```
-7. Run script:
+6. Run script:
 ```
 python3 scripts/get_kits_json.py -s web
 python3 scripts/get_kits_json.py -s fs

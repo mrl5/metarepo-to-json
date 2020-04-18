@@ -81,8 +81,12 @@ class KitsFromWeb(KitsInterface):
         throw_on_corrupted_metarepo(self.kitinfo, self.kitsha1)
 
     async def process_data(self):
+        kits = []
         for kit_name, branches in self.kitinfo["release_defs"].items():
-            self.kits.append(get_kit(kit_name, branches, self.kitsha1))
+            kit_settings = self.kitinfo["kit_settings"][kit_name]
+            kitsha1 = self.kitsha1[kit_name]
+            kits.append(get_kit(kit_name, kit_settings, branches, kitsha1))
+        self.kits = kits
 
     async def get_result(self) -> dict:
         if self.kitinfo_location is None or self.kitsha1_location is None:

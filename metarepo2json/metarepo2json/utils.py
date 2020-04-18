@@ -6,14 +6,21 @@ from re import match
 from urllib.parse import parse_qs, urlencode, urlparse
 
 
-def get_kit(hub, kit_name: str, branches: list, kitsha1: dict) -> dict:
+def get_kit(
+    hub, kit_name: str, kit_settings: dict, branches: list, kitsha1: dict
+) -> dict:
     b = list(
         map(
-            lambda x: {"name": x, "catpkgs": [], "sha1": kitsha1[kit_name][x]},
+            lambda x: {
+                "name": x,
+                "catpkgs": [],
+                "sha1": kitsha1[x],
+                "stability": kit_settings["stability"][x],
+            },
             branches,
         )
     )
-    return {"name": kit_name, "branches": b}
+    return {"name": kit_name, "branches": b, "type": kit_settings["type"]}
 
 
 def get_raw_file_uri(hub, repo_uri, file_subpath, branch=None) -> str:
@@ -43,9 +50,15 @@ def get_raw_file_uri(hub, repo_uri, file_subpath, branch=None) -> str:
 
 
 def is_metarepo_corrupted(hub, kitinfo: dict, kitsha1: dict) -> bool:
-    kitinfo_required_keys = ["kit_order", "kit_settings", "release_defs", "release_info"]
+    kitinfo_required_keys = [
+        "kit_order",
+        "kit_settings",
+        "release_defs",
+        "release_info",
+    ]
     return (
-        not all(list(map(lambda x: x in kitinfo.keys(), kitinfo_required_keys))) or not kitsha1
+        not all(list(map(lambda x: x in kitinfo.keys(), kitinfo_required_keys)))
+        or not kitsha1
     )
 
 
