@@ -6,13 +6,19 @@ def __init__(hub):
     HUB = hub
 
 
-class InvalidMetarepoStructureError(OSError):
+class InvalidStructureError(OSError):
     def __init__(self, msg):
         self.hub = HUB
         self.msg = msg
 
 
 class CorruptedMetarepoError(KeyError):
+    def __init__(self, msg):
+        self.hub = HUB
+        self.msg = msg
+
+
+class CorruptedKitError(ValueError):
     def __init__(self, msg):
         self.hub = HUB
         self.msg = msg

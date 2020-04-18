@@ -8,7 +8,7 @@ from metarepo2json.metarepo2json.interfaces import KitsInterface
 
 def __init__(hub):
     global HUB
-    global metarepo_fs_location
+    global repo_fs
     global kitinfo_subpath
     global kitsha1_subpath
     global version_subpath
@@ -16,10 +16,10 @@ def __init__(hub):
     global throw_on_corrupted_metarepo
     global get_kit
     global sort_kits
-    global InvalidMetarepoStructureError
+    global InvalidStructureError
 
     HUB = hub
-    metarepo_fs_location = hub.OPT.metarepo2json.metarepo_fs_location
+    repo_fs = hub.OPT.metarepo2json.repo_fs
     kitinfo_subpath = hub.OPT.metarepo2json.kitinfo_subpath
     kitsha1_subpath = hub.OPT.metarepo2json.kitsha1_subpath
     version_subpath = hub.OPT.metarepo2json.version_subpath
@@ -28,9 +28,9 @@ def __init__(hub):
         hub.metarepo2json.utils.throw_on_corrupted_metarepo
     )
     get_kit = hub.metarepo2json.utils.get_kit
-    sort_kits = hub.metarepo2json.utils.sort_kits
-    InvalidMetarepoStructureError = (
-        hub.metarepo2json.errors.InvalidMetarepoStructureError
+    sort_kits = hub.metarepo2json.utils.sort_list_of_dicts_by_key_values
+    InvalidStructureError = (
+        hub.metarepo2json.errors.InvalidStructureError
     )
 
 
@@ -38,7 +38,7 @@ class KitsFromFileSystem(KitsInterface):
     def __init__(self, metarepo_location=None):
         self.hub = HUB
         self.metarepo_location = (
-            metarepo_location if metarepo_location is not None else metarepo_fs_location
+            metarepo_location if metarepo_location is not None else repo_fs
         )
         self.kitinfo_location = None
         self.kitsha1_location = None
@@ -73,7 +73,7 @@ class KitsFromFileSystem(KitsInterface):
         self._set_locations()
         if not self._is_repo_fs_structure_valid():
             errmsg = "Invalid meta-repo structure"
-            raise InvalidMetarepoStructureError(errmsg)
+            raise InvalidStructureError(errmsg)
         await self._load_data()
         throw_on_corrupted_metarepo(self.kitinfo, self.kitsha1)
 
@@ -90,4 +90,4 @@ class KitsFromFileSystem(KitsInterface):
             await self.load_data()
         if self.kits is None:
             await self.process_data()
-        return sort_kits(self.kits, self.kitinfo["kit_order"])
+        return sort_kits(self.kits, "name", self.kitinfo["kit_order"])

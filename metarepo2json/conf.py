@@ -1,14 +1,14 @@
 CONFIG = {
-    "metarepo_source": {"default": "fs", "help": "Meta-repo storage medium",},
-    "metarepo_fs_location": {
+    "data_source": {"default": "fs", "help": "Storage medium",},
+    "repo_fs": {
         "default": "/var/git/meta-repo",
-        "help": "Funtoo meta-repo default location in filesystem",
+        "help": "Location in filesystem",
     },
-    "metarepo_web_location": {
+    "repo_web": {
         "default": "https://github.com/funtoo/meta-repo",
-        "help": "Funtoo meta-repo default location in web",
+        "help": "Location in web",
     },
-    "metarepo_branch": {"default": "1.4-release", "help": "Funtoo meta-repo branch",},
+    "branch": {"default": "1.4-release", "help": "Git branch",},
     "kitinfo_subpath": {
         "default": "metadata/kit-info.json",
         "help": "kit-info.json default relative location in meta-repo",
@@ -20,6 +20,11 @@ CONFIG = {
     "version_subpath": {
         "default": "metadata/version.json",
         "help": "version.json default relative location in meta-repo",
+    },
+    "kits_subpath": {"default": "kits", "help": "default kits filesystem subpath",},
+    "categories_subpath": {
+        "default": "profiles/categories",
+        "help": "default categories file with kit categories list",
     },
     "net_protocol": {"default": "https", "help": "network protocol"},
     "github_raw_netloc": {
@@ -33,24 +38,26 @@ CONFIG = {
 }
 
 CLI_CONFIG = {
-    "metarepo_source": {
-        "options": ["-s", "--metarepo-source"],
-        "os": "METAREPO_SOURCE",
+    "data_source": {
+        "options": ["-s", "--source"],
+        "os": "DATA_SOURCE",
         "type": str,
     },
-    "metarepo_fs_location": {
+    "repo_fs": {
         "options": ["-fs", "--file-system"],
-        "os": "METAREPO_FS",
+        "os": "FS_LOCATION",
         "type": str,
+        "nargs": "?",
+        "positional": True,
     },
-    "metarepo_web_location": {
+    "repo_web": {
         "options": ["-w", "--web"],
-        "os": "METAREPO_WEB",
+        "os": "WEB_LOCATION",
         "type": str,
     },
-    "metarepo_branch": {
-        "options": ["-b", "--branch"],
-        "os": "METAREPO_BRANCH",
+    "branch": {
+        "options": ["-b"],
+        "os": "BRANCH",
         "type": str,
     },
 }

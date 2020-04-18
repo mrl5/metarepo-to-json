@@ -6,8 +6,9 @@ from pathlib import Path
 import pop.hub
 import pytest
 
-from tests.mocks.metadata.kit_info import KIT_INFO as kitinfo_mock
-from tests.mocks.metadata.kit_sha1 import KIT_SHA1 as kitsha1_mock
+from tests.mocks.categories import CATEGORIES as categories
+from tests.mocks.kit_info import KIT_INFO as kitinfo_mock
+from tests.mocks.kit_sha1 import KIT_SHA1 as kitsha1_mock
 
 hub = pop.hub.Hub()
 hub.pop.sub.add(dyne_name="metarepo2json", omit_class=False)
@@ -15,7 +16,7 @@ hub.pop.sub.add(dyne_name="metarepo2json", omit_class=False)
 
 def mkdirs(tmpdir, subdirs):
     for d in subdirs:
-        Path.mkdir(tmpdir / d)
+        Path.mkdir(tmpdir / d, parents=True)
 
 
 def touch(tmpdir, files):
@@ -80,6 +81,36 @@ def stub_metarepos(tmp_path_factory):
         "{}",
     )
     return metarepos
+
+
+@pytest.fixture(scope="session")
+def stub_kits(stub_metarepos):
+    metarepos = stub_metarepos
+    kits = {
+        "valid_kit": metarepos["valid_metarepo"]
+        / hub.OPT.metarepo2json.kits_subpath
+        / "test-kit-valid",
+        "invalid_kit": metarepos["valid_metarepo"]
+        / hub.OPT.metarepo2json.kits_subpath
+        / "test-kit-invalid",
+        "corrupted_kit": metarepos["valid_metarepo"]
+        / hub.OPT.metarepo2json.kits_subpath
+        / "test-kit-corrupted",
+    }
+    profiles = Path(hub.OPT.metarepo2json.categories_subpath).parent
+    mkdirs(kits["valid_kit"], [profiles, *categories])
+    mkdirs(kits["invalid_kit"], categories)
+    mkdirs(kits["corrupted_kit"], [profiles, *categories[:-1]])
+    touch(kits["valid_kit"], [hub.OPT.metarepo2json.categories_subpath])
+    touch(kits["corrupted_kit"], [hub.OPT.metarepo2json.categories_subpath])
+    write(
+        [
+            kits["valid_kit"] / hub.OPT.metarepo2json.categories_subpath,
+            kits["corrupted_kit"] / hub.OPT.metarepo2json.categories_subpath,
+        ],
+        str("\n".join(categories)),
+    )
+    return kits
 
 
 @pytest.fixture(scope="function")
@@ -167,3 +198,8 @@ def funtoo_stash_uris(funtoo_stash_netlocs, bitbucket_repos, custom_branch):
 @pytest.fixture(scope="function")
 def invalid_git_service_uri():
     return "https://nonexisting.gitservice.com/foo/bar"
+
+
+@pytest.fixture(scope="function")
+def get_schema():
+    return hub.metarepo2json.factory.get_schema

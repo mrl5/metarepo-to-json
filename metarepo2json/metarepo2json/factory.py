@@ -18,12 +18,23 @@ def get_kits_instance(hub, source="fs"):
     return kits[source]
 
 
-def get_kit_schema(hub) -> dict:
-    kit_schema_json = "kit.schema.json"
+def get_categories_instance(hub, source="fs"):
+    categories = {
+        "fs": hub.metarepo2json.categories.categories_fs.CategoriesFromFileSystem(),
+        "web": hub.metarepo2json.categories.categories_web.CategoriesFromWeb(),
+    }
+    return categories[source]
+
+
+def get_schema(hub, schema) -> dict:
+    schemas = {
+        "kit": "kit.schema.json",
+        "category": "category.schema.json",
+        "package": "package.schema.json",
+    }
+    schema_json = schemas[schema]
     file_path = Path(__file__).resolve()
-    kit_schema_path = file_path.parent.joinpath(schemas_subpath).joinpath(
-        kit_schema_json
-    )
-    with open(kit_schema_path) as f:
-        kit_schema = json.load(f)
-    return kit_schema
+    schema_path = file_path.parent.joinpath(schemas_subpath).joinpath(schema_json)
+    with open(schema_path) as f:
+        schema = json.load(f)
+    return schema

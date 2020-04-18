@@ -3,11 +3,12 @@
 import pop.hub
 import pytest
 
-from tests.utils import github_netlocs, funtoo_stash_netlocs, github_repos, \
-        bitbucket_repos, invalid_github_paths, invalid_funtoo_stash_paths, \
-        custom_branch, github_uris, funtoo_stash_uris, invalid_git_service_uri
-from tests.mocks.metadata.kit_info import KIT_INFO
-from tests.mocks.metadata.kit_sha1 import KIT_SHA1
+from tests.mocks.kit_info import KIT_INFO
+from tests.mocks.kit_sha1 import KIT_SHA1
+from tests.utils import (bitbucket_repos, custom_branch, funtoo_stash_netlocs,
+                         funtoo_stash_uris, github_netlocs, github_repos,
+                         github_uris, invalid_funtoo_stash_paths,
+                         invalid_git_service_uri, invalid_github_paths)
 
 hub = pop.hub.Hub()
 hub.pop.sub.add(dyne_name="metarepo2json", omit_class=False)
@@ -31,6 +32,11 @@ def get_funtoo_stash_raw_file_uri():
 @pytest.fixture(scope="function")
 def is_metarepo_corrupted():
     return hub.metarepo2json.utils.is_metarepo_corrupted
+
+
+@pytest.fixture(scope="function")
+def sort_kits():
+    return hub.metarepo2json.utils.sort_list_of_dicts_by_key_values
 
 
 def test_is_github(github_netlocs, funtoo_stash_netlocs):
@@ -97,7 +103,7 @@ def test_get_github_raw_file_uri(
     custom_branch,
 ):
     default_protocol = hub.OPT.metarepo2json.net_protocol
-    default_branch = hub.OPT.metarepo2json.metarepo_branch
+    default_branch = hub.OPT.metarepo2json.branch
     file_subpath = "metadata/kit-info.json"
     get_raw_file_uri = get_github_raw_file_uri
     uris = github_uris
@@ -137,7 +143,7 @@ def test_get_funtoo_stash_raw_file_uri(
     custom_branch,
 ):
     default_protocol = hub.OPT.metarepo2json.net_protocol
-    default_branch = hub.OPT.metarepo2json.metarepo_branch
+    default_branch = hub.OPT.metarepo2json.branch
     file_subpath = "metadata/kit-info.json"
     get_raw_file_uri = get_funtoo_stash_raw_file_uri
     uris = funtoo_stash_uris
@@ -169,7 +175,12 @@ def test_get_funtoo_stash_raw_file_uri(
 
 
 def test_get_raw_file_uri(
-    get_raw_file_uri, funtoo_stash_uris, github_uris, github_repos, bitbucket_repos, invalid_git_service_uri
+    get_raw_file_uri,
+    funtoo_stash_uris,
+    github_uris,
+    github_repos,
+    bitbucket_repos,
+    invalid_git_service_uri,
 ):
     file_subpath = "metadata/kit-info.json"
     with pytest.raises(hub.metarepo2json.errors.GitServiceError):
@@ -180,7 +191,7 @@ def test_get_raw_file_uri(
     ]
     uris = [github_uris[0], funtoo_stash_uris[0]]
     default_protocol = hub.OPT.metarepo2json.net_protocol
-    default_branch = hub.OPT.metarepo2json.metarepo_branch
+    default_branch = hub.OPT.metarepo2json.branch
     expected_results = [
         f"{default_protocol}://{base_uris[0]}{github_repos[0]}/{default_branch}/{file_subpath}",
         f"{default_protocol}://{base_uris[1]}{bitbucket_repos[0]}/raw/{file_subpath}?at=refs%2Fheads%2F{default_branch}",
@@ -198,3 +209,18 @@ def test_is_metarepo_corrupted(is_metarepo_corrupted):
     assert is_metarepo_corrupted(valid_kitinfo, invalid_kitsha1) is True
     assert is_metarepo_corrupted(invalid_kitinfo, valid_kitsha1) is True
     assert is_metarepo_corrupted(valid_kitinfo, valid_kitsha1) is False
+
+
+def test_sort_kits(sort_kits):
+    key = "name"
+    name_order = ["a", "b", "c"]
+    unsorted_list = [{key: "b"}, {key: "a"}, {key: "c"}]
+    sorted_list = sort_kits(unsorted_list, key, name_order)
+    assert sorted_list[0]["name"] == name_order[0]
+    assert sorted_list[1]["name"] == name_order[1]
+    assert sorted_list[2]["name"] == name_order[2]
+    name_order = ["c", "b", "a"]
+    sorted_list = sort_kits(unsorted_list, key, name_order)
+    assert sorted_list[0]["name"] == name_order[0]
+    assert sorted_list[1]["name"] == name_order[1]
+    assert sorted_list[2]["name"] == name_order[2]

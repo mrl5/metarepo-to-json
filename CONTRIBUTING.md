@@ -57,23 +57,12 @@ Next, what you will need to do is:
 2. Modify the code: perhaps only getter changes in `*_utils.py` file(s) (e.g.
    for kits you will need to modify `get_kit()` in [kits utils])
 3. Run/modify unit tests
-4. For better example, study this commit: `#todo`
+4. For better example, study commit `bd287069701c82cc111b6b68521cf3f3b9ff91a5`
 
 
 ## HOWTO integrate with other plugins
-In this example we will integrate with `pkgtools` plugin which is inside
-[funtoo-metatools] Git project
-
-1. Add Git submodule:
-```
-git submodule add https://code.funtoo.org/bitbucket/scm/~drobbins/funtoo-metatools.git
-cd metarepo2json/
-ln -s ../funtoo-metatools/pkgtools/ pkgtools
-cd ..
-git add metarepo2json/
-```
-2. Add new plugin into `DYNE` in `conf.py`
-3. For better example, study this commit: `#todo`
+**THIS IS A DRAFT, UNFORTUNATELY THIS IS STILL STANDALONE PROJECT THAT DOES NOT
+USE OTHER PLUGINS**
 
 
 ## HOWTO integrate with other Git webservices

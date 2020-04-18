@@ -23,6 +23,10 @@ def get_kit(
     return {"name": kit_name, "branches": b, "type": kit_settings["type"]}
 
 
+def get_category(hub, category_name: str) -> dict:
+    return {"name": category_name, "packages": []}
+
+
 def get_raw_file_uri(hub, repo_uri, file_subpath, branch=None) -> str:
     default_protocol = hub.OPT.metarepo2json.net_protocol
     o = parse_uri(hub, repo_uri, default_protocol)
@@ -106,7 +110,7 @@ def throw_on_bitbucket_refs(hub, validator, query: str):
         raise hub.metarepo2json.errors.FuntooStashRepoURIError(errmsg)
 
 
-def throw_on_corrupted_metarepo(hub, kitinfo, kitsha1):
+def throw_on_corrupted_metarepo(hub, kitinfo: dict, kitsha1: dict):
     errmsg = "Corrupted meta-repo content"
     if is_metarepo_corrupted(hub, kitinfo, kitsha1):
         raise hub.metarepo2json.errors.CorruptedMetarepoError(errmsg)
@@ -148,7 +152,7 @@ def is_bitbucket_refs_given(hub, query) -> bool:
 def get_github_raw_file_uri(hub, repo_uri: str, file_subpath: str, branch=None) -> str:
     base_uri = hub.OPT.metarepo2json.github_raw_netloc
     default_protocol = hub.OPT.metarepo2json.net_protocol
-    branch = branch if branch is not None else hub.OPT.metarepo2json.metarepo_branch
+    branch = branch if branch is not None else hub.OPT.metarepo2json.branch
     o = parse_uri(hub, repo_uri, default_protocol)
     throw_on_invalid_git_service(hub, is_github, o.netloc)
     throw_on_invalid_github_path(hub, is_github_repo_given, o.path)
@@ -160,7 +164,7 @@ def get_github_raw_file_uri(hub, repo_uri: str, file_subpath: str, branch=None) 
 def get_funtoo_stash_raw_file_uri(hub, repo_uri, file_subpath, branch=None) -> str:
     base_uri = hub.OPT.metarepo2json.funtoo_stash_raw_netloc
     default_protocol = hub.OPT.metarepo2json.net_protocol
-    branch = branch if branch is not None else hub.OPT.metarepo2json.metarepo_branch
+    branch = branch if branch is not None else hub.OPT.metarepo2json.branch
     o = parse_uri(hub, repo_uri, default_protocol)
     throw_on_invalid_git_service(hub, is_funtoo_stash, o.netloc)
     throw_on_invalid_funtoo_stash_path(hub, is_bitbucket_repo_given, o.path)
@@ -173,9 +177,5 @@ def get_funtoo_stash_raw_file_uri(hub, repo_uri, file_subpath, branch=None) -> s
     return f"{default_protocol}://{base_uri}{path}/raw/{file_subpath}?{qs}"
 
 
-def sort_kits(hub, kits, kits_order):
-    return list(
-        map(
-            lambda x: list(filter(lambda kit: kit["name"] == x, kits)).pop(), kits_order
-        )
-    )
+def sort_list_of_dicts_by_key_values(hub, dicts: list, key: str, order: list) -> list:
+    return list(map(lambda x: list(filter(lambda d: d[key] == x, dicts)).pop(), order))

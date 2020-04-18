@@ -8,7 +8,7 @@ from metarepo2json.metarepo2json.interfaces import KitsInterface
 
 def __init__(hub):
     global HUB
-    global metarepo_web_location
+    global repo_web
     global kitinfo_subpath
     global kitsha1_subpath
     global version_subpath
@@ -20,7 +20,7 @@ def __init__(hub):
     global sort_kits
 
     HUB = hub
-    metarepo_web_location = hub.OPT.metarepo2json.metarepo_web_location
+    repo_web = hub.OPT.metarepo2json.repo_web
     kitinfo_subpath = hub.OPT.metarepo2json.kitinfo_subpath
     kitsha1_subpath = hub.OPT.metarepo2json.kitsha1_subpath
     version_subpath = hub.OPT.metarepo2json.version_subpath
@@ -31,7 +31,7 @@ def __init__(hub):
         hub.metarepo2json.utils.throw_on_corrupted_metarepo
     )
     get_kit = hub.metarepo2json.utils.get_kit
-    sort_kits = hub.metarepo2json.utils.sort_kits
+    sort_kits = hub.metarepo2json.utils.sort_list_of_dicts_by_key_values
 
 
 class KitsFromWeb(KitsInterface):
@@ -41,13 +41,13 @@ class KitsFromWeb(KitsInterface):
         self.metarepo_location = (
             metarepo_location
             if metarepo_location is not None
-            else metarepo_web_location
+            else repo_web
         )
         self.kitinfo_location = None
         self.kitsha1_location = None
         self.kitinfo = None
         self.kitsha1 = None
-        self.kits = []
+        self.kits = None
 
     def _set_locations(self):
         self.kitinfo_location = get_raw_file_uri(
@@ -60,7 +60,7 @@ class KitsFromWeb(KitsInterface):
     def _set_session(self, session):
         self.session = session
 
-    def _set_fetcher(self, fetcher):
+    def set_fetcher(self, fetcher):
         self.fetch = fetcher
 
     async def _set_kitinfo(self, session):
@@ -93,4 +93,4 @@ class KitsFromWeb(KitsInterface):
             await self.load_data()
         if self.kits is None:
             await self.process_data()
-        return sort_kits(self.kits, self.kitinfo["kit_order"])
+        return sort_kits(self.kits, "name", self.kitinfo["kit_order"])

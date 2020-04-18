@@ -26,10 +26,15 @@ export PYTHONPATH=./
 ```
 python3 scripts/get_kits_json.py --help
 ```
-6. Run script:
+6. Run scripts:
 ```
 python3 scripts/get_kits_json.py -s web
 python3 scripts/get_kits_json.py -s fs
+```
+```
+python3 scripts/get_categories_json.py -s web --repo-web https://code.funtoo.org/bitbucket/projects/AUTO/repos/browser-kit/browse
+python3 scripts/get_categories_json.py -s web --branch 3.34-prime --repo-web https://code.funtoo.org/bitbucket/projects/INDY/repos/gnome-kit/browse
+python3 scripts/get_categories_json.py -s fs /var/git/meta-repo/kits/media-kit/
 ```
 
 ## I want to contribute/learn more technical details
