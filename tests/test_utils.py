@@ -116,9 +116,9 @@ def test_get_github_raw_file_uri(
     base_uri = hub.OPT.metarepo2json.github_raw_netloc
     results = [
         get_raw_file_uri(uris[0], file_subpath),
-        get_raw_file_uri(uris[1], file_subpath, custom_branch),
-        get_raw_file_uri(uris[2], file_subpath, default_branch),
-        get_raw_file_uri(uris[3], file_subpath, default_branch),
+        get_raw_file_uri(uris[1], file_subpath, branch=custom_branch),
+        get_raw_file_uri(uris[2], file_subpath, branch=default_branch),
+        get_raw_file_uri(uris[3], file_subpath, branch=default_branch),
         get_raw_file_uri(uris[4], file_subpath),
     ]
     expected_results = [
@@ -157,9 +157,9 @@ def test_get_funtoo_stash_raw_file_uri(
     base_uri = hub.OPT.metarepo2json.funtoo_stash_raw_netloc
     results = [
         get_raw_file_uri(uris[0], file_subpath),
-        get_raw_file_uri(uris[1], file_subpath, custom_branch),
-        get_raw_file_uri(uris[2], file_subpath, default_branch),
-        get_raw_file_uri(uris[3], file_subpath, default_branch),
+        get_raw_file_uri(uris[1], file_subpath, branch=custom_branch),
+        get_raw_file_uri(uris[2], file_subpath, branch=default_branch),
+        get_raw_file_uri(uris[3], file_subpath, branch=default_branch),
         get_raw_file_uri(uris[4], file_subpath),
     ]
     expected_results = [
@@ -192,12 +192,22 @@ def test_get_raw_file_uri(
     uris = [github_uris[0], funtoo_stash_uris[0]]
     default_protocol = hub.OPT.metarepo2json.net_protocol
     default_branch = hub.OPT.metarepo2json.branch
+    commit = "86909d655f985270d9e38ca0e3022c7136dda945"
     expected_results = [
         f"{default_protocol}://{base_uris[0]}{github_repos[0]}/{default_branch}/{file_subpath}",
         f"{default_protocol}://{base_uris[1]}{bitbucket_repos[0]}/raw/{file_subpath}?at=refs%2Fheads%2F{default_branch}",
+        f"{default_protocol}://{base_uris[0]}{github_repos[0]}/{commit}/{file_subpath}",
+        f"{default_protocol}://{base_uris[1]}{bitbucket_repos[0]}/raw/{file_subpath}?at={commit}",
     ]
-    assert get_raw_file_uri(uris[0], file_subpath) == expected_results[0]
-    assert get_raw_file_uri(uris[1], file_subpath) == expected_results[1]
+    results = [
+        get_raw_file_uri(uris[0], file_subpath),
+        get_raw_file_uri(uris[1], file_subpath),
+        get_raw_file_uri(uris[0], file_subpath, commit=commit),
+        get_raw_file_uri(uris[1], file_subpath, commit=commit),
+    ]
+    assert len(results) == len(expected_results)
+    for i, result in enumerate(results):
+        assert result == expected_results[i]
 
 
 def test_is_metarepo_corrupted(is_metarepo_corrupted):

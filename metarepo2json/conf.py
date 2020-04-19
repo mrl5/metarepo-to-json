@@ -9,6 +9,7 @@ CONFIG = {
         "help": "Location in web",
     },
     "branch": {"default": "1.4-release", "help": "Git branch",},
+    "commit": {"default": None, "help": "Git commit SHA1",},
     "kitinfo_subpath": {
         "default": "metadata/kit-info.json",
         "help": "kit-info.json default relative location in meta-repo",
@@ -58,6 +59,11 @@ CLI_CONFIG = {
     "branch": {
         "options": ["-b"],
         "os": "BRANCH",
+        "type": str,
+    },
+    "commit": {
+        "options": ["-c"],
+        "os": "COMMIT",
         "type": str,
     },
 }

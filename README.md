@@ -34,7 +34,9 @@ python3 scripts/get_kits_json.py -s fs
 ```
 python3 scripts/get_categories_json.py -s web --repo-web https://code.funtoo.org/bitbucket/projects/AUTO/repos/browser-kit/browse
 python3 scripts/get_categories_json.py -s web --branch 3.34-prime --repo-web https://code.funtoo.org/bitbucket/projects/INDY/repos/gnome-kit/browse
+python3 scripts/get_categories_json.py -s web --repo-web https://github.com/funtoo/browser-kit --commit 95b2af11f842b627943988f3c37dad5a09b3e9bd
 python3 scripts/get_categories_json.py -s fs /var/git/meta-repo/kits/media-kit/
+python3 scripts/get_categories_json.py -s fs /var/git/meta-repo/kits/core-kit -c d68adcb7a1463bcf5be7127dfffe448fcf503276
 ```
 
 ## I want to contribute/learn more technical details

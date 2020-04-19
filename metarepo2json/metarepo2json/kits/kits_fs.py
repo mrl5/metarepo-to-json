@@ -9,29 +9,29 @@ from metarepo2json.metarepo2json.interfaces import KitsInterface
 def __init__(hub):
     global HUB
     global repo_fs
+    global commit
     global kitinfo_subpath
     global kitsha1_subpath
     global version_subpath
 
     global throw_on_corrupted_metarepo
     global get_kit
+    global get_fs_file_from_commit
     global sort_kits
     global InvalidStructureError
 
     HUB = hub
     repo_fs = hub.OPT.metarepo2json.repo_fs
+    commit = hub.OPT.metarepo2json.commit
     kitinfo_subpath = hub.OPT.metarepo2json.kitinfo_subpath
     kitsha1_subpath = hub.OPT.metarepo2json.kitsha1_subpath
     version_subpath = hub.OPT.metarepo2json.version_subpath
 
-    throw_on_corrupted_metarepo = (
-        hub.metarepo2json.utils.throw_on_corrupted_metarepo
-    )
+    throw_on_corrupted_metarepo = hub.metarepo2json.utils.throw_on_corrupted_metarepo
     get_kit = hub.metarepo2json.utils.get_kit
+    get_fs_file_from_commit = hub.metarepo2json.utils.get_fs_file_from_commit
     sort_kits = hub.metarepo2json.utils.sort_list_of_dicts_by_key_values
-    InvalidStructureError = (
-        hub.metarepo2json.errors.InvalidStructureError
-    )
+    InvalidStructureError = hub.metarepo2json.errors.InvalidStructureError
 
 
 class KitsFromFileSystem(KitsInterface):
@@ -40,6 +40,7 @@ class KitsFromFileSystem(KitsInterface):
         self.metarepo_location = (
             metarepo_location if metarepo_location is not None else repo_fs
         )
+        self.commit = commit
         self.kitinfo_location = None
         self.kitsha1_location = None
         self.kitinfo = None
@@ -51,10 +52,22 @@ class KitsFromFileSystem(KitsInterface):
         self.kitsha1_location = Path(self.metarepo_location).joinpath(kitsha1_subpath)
 
     async def _load_data(self):
-        with open(self.kitinfo_location) as f:
-            self.kitinfo = json.load(f)
-        with open(self.kitsha1_location) as f:
-            self.kitsha1 = json.load(f)
+        if self.commit is None:
+            with open(self.kitinfo_location) as f:
+                self.kitinfo = json.load(f)
+            with open(self.kitsha1_location) as f:
+                self.kitsha1 = json.load(f)
+        else:
+            self.kitinfo = json.loads(
+                get_fs_file_from_commit(
+                    self.metarepo_location, self.commit, kitinfo_subpath
+                )
+            )
+            self.kitsha1 = json.loads(
+                get_fs_file_from_commit(
+                    self.metarepo_location, self.commit, kitsha1_subpath
+                )
+            )
 
     def _is_repo_fs_structure_valid(self):
         try:

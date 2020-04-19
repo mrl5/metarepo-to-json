@@ -18,6 +18,6 @@ setuptools.setup(
         "Operating System :: POSIX :: Linux",
     ],
     python_requires=">=3.7",
-    install_requires=["pop>=12", "aiohttp>=3.6.2"],
+    install_requires=["pop>=12", "aiohttp>=3.6.2", "GitPython>=3.1.1"],
     packages=setuptools.find_packages(),
 )

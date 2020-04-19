@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 
 
+from io import BytesIO
 from pathlib import Path, PurePath
 from re import match
 from urllib.parse import parse_qs, urlencode, urlparse
+
+from git import Repo
 
 
 def get_kit(
@@ -27,7 +30,9 @@ def get_category(hub, category_name: str) -> dict:
     return {"name": category_name, "packages": []}
 
 
-def get_raw_file_uri(hub, repo_uri, file_subpath, branch=None) -> str:
+def get_raw_file_uri(hub, repo_uri, file_subpath, **kwargs) -> str:
+    branch = kwargs["branch"] if "branch" in kwargs else hub.OPT.metarepo2json.branch
+    commit = kwargs["commit"] if "commit" in kwargs else hub.OPT.metarepo2json.commit
     default_protocol = hub.OPT.metarepo2json.net_protocol
     o = parse_uri(hub, repo_uri, default_protocol)
     supported_git_webservices = [
@@ -47,10 +52,17 @@ def get_raw_file_uri(hub, repo_uri, file_subpath, branch=None) -> str:
                 filter(lambda x: x["is_valid"] is True, supported_git_webservices),
             )
         ).pop()
-        return fn(hub, repo_uri, file_subpath, branch)
+        return fn(hub, repo_uri, file_subpath, branch=branch, commit=commit)
     except IndexError:
         errmsg = f"Invalid Git service: {o.netloc}"
         raise hub.metarepo2json.errors.GitServiceError(errmsg)
+
+
+def get_fs_file_from_commit(hub, git_repo, commit, subpath):
+    repo = Repo(git_repo)
+    targetfile = repo.commit(commit).tree / subpath
+    with BytesIO(targetfile.data_stream.read()) as f:
+        return f.read().decode("utf-8")
 
 
 def is_metarepo_corrupted(hub, kitinfo: dict, kitsha1: dict) -> bool:
@@ -149,28 +161,31 @@ def is_bitbucket_refs_given(hub, query) -> bool:
     return "at" in parse_qs(query)
 
 
-def get_github_raw_file_uri(hub, repo_uri: str, file_subpath: str, branch=None) -> str:
+def get_github_raw_file_uri(hub, repo_uri: str, file_subpath: str, **kwargs) -> str:
     base_uri = hub.OPT.metarepo2json.github_raw_netloc
     default_protocol = hub.OPT.metarepo2json.net_protocol
-    branch = branch if branch is not None else hub.OPT.metarepo2json.branch
+    branch = kwargs["branch"] if "branch" in kwargs else hub.OPT.metarepo2json.branch
+    commit = kwargs["commit"] if "commit" in kwargs else hub.OPT.metarepo2json.commit
     o = parse_uri(hub, repo_uri, default_protocol)
     throw_on_invalid_git_service(hub, is_github, o.netloc)
     throw_on_invalid_github_path(hub, is_github_repo_given, o.path)
     throw_on_github_tree(hub, is_github_tree_given, o.path)
     path = normalize_net_path(hub, o.path)
-    return f"{default_protocol}://{base_uri}{path}/{branch}/{file_subpath}"
+    ref = branch if commit is None else commit
+    return f"{default_protocol}://{base_uri}{path}/{ref}/{file_subpath}"
 
 
-def get_funtoo_stash_raw_file_uri(hub, repo_uri, file_subpath, branch=None) -> str:
+def get_funtoo_stash_raw_file_uri(hub, repo_uri, file_subpath, **kwargs) -> str:
     base_uri = hub.OPT.metarepo2json.funtoo_stash_raw_netloc
     default_protocol = hub.OPT.metarepo2json.net_protocol
-    branch = branch if branch is not None else hub.OPT.metarepo2json.branch
+    branch = kwargs["branch"] if "branch" in kwargs else hub.OPT.metarepo2json.branch
+    commit = kwargs["commit"] if "commit" in kwargs else hub.OPT.metarepo2json.commit
     o = parse_uri(hub, repo_uri, default_protocol)
     throw_on_invalid_git_service(hub, is_funtoo_stash, o.netloc)
     throw_on_invalid_funtoo_stash_path(hub, is_bitbucket_repo_given, o.path)
     throw_on_bitbucket_refs(hub, is_bitbucket_refs_given, o.path)
-    branch_anchor = {"at": [f"refs/heads/{branch}"]}
-    qs = urlencode(branch_anchor, doseq=True)
+    ref = {"at": [f"refs/heads/{branch}" if commit is None else commit]}
+    qs = urlencode(ref, doseq=True)
     path = normalize_net_path(hub, o.path)
     if path.endswith("browse") is True:
         path = str(PurePath(path).parent)
