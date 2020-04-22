@@ -31,7 +31,9 @@ class CategoriesFromWeb(CategoriesInterface):
         self.cat_list = None
         self.categories = None
 
-    def _set_locations(self):
+    def _set_location(self, location):
+        if location is not None:
+            self.kit_location = location
         self.categories_location = get_raw_file_uri(
             self.kit_location, self.categories_subpath
         )
@@ -55,10 +57,8 @@ class CategoriesFromWeb(CategoriesInterface):
             raise ValueError("Malformed web content")
 
     async def load_data(self, location=None, **kwargs):
-        if location is not None:
-            self.kit_location = location
         session = kwargs["session"] if "session" in kwargs else None
-        self._set_locations()
+        self._set_location(location)
         await self._load_data(session)
         self._throw_on_invalid_cat_list()
 

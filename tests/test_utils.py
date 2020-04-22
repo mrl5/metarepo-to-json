@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
 
+from pathlib import Path
+
 import pop.hub
 import pytest
 
+import tests.mocks.ebuilds.brave_bin as brave_bin
+import tests.mocks.ebuilds.firefox as firefox
+import tests.mocks.ebuilds.xorg_cf_files as xorg_cf_files
 from tests.mocks.kit_info import KIT_INFO
 from tests.mocks.kit_sha1 import KIT_SHA1
 from tests.utils import (bitbucket_repos, custom_branch, funtoo_stash_netlocs,
                          funtoo_stash_uris, github_netlocs, github_repos,
                          github_uris, invalid_funtoo_stash_paths,
-                         invalid_git_service_uri, invalid_github_paths)
+                         invalid_git_service_uri, invalid_github_paths,
+                         mock_ebuild, stub_kits, stub_metarepos, stub_packages)
 
 hub = pop.hub.Hub()
 hub.pop.sub.add(dyne_name="metarepo2json", omit_class=False)
@@ -37,6 +43,26 @@ def is_metarepo_corrupted():
 @pytest.fixture(scope="function")
 def sort_kits():
     return hub.metarepo2json.utils.sort_list_of_dicts_by_key_values
+
+
+@pytest.fixture(scope="function")
+def get_github_tree_uri():
+    return hub.metarepo2json.utils.get_github_tree_uri
+
+
+@pytest.fixture(scope="function")
+def get_funtoo_stash_tree_uri():
+    return hub.metarepo2json.utils.get_funtoo_stash_tree_uri
+
+
+@pytest.fixture(scope="function")
+def var_to_dict():
+    return hub.metarepo2json.utils.var_to_dict
+
+
+@pytest.fixture(scope="function")
+def get_ebuild_properties():
+    return hub.metarepo2json.utils.get_ebuild_properties
 
 
 def test_is_github(github_netlocs, funtoo_stash_netlocs):
@@ -234,3 +260,94 @@ def test_sort_kits(sort_kits):
     assert sorted_list[0]["name"] == name_order[0]
     assert sorted_list[1]["name"] == name_order[1]
     assert sorted_list[2]["name"] == name_order[2]
+
+
+def test_get_github_tree_uri(
+    get_github_tree_uri, github_uris, github_repos, funtoo_stash_netlocs, github_netlocs
+):
+    get_api_uri = get_github_tree_uri
+    default_protocol = hub.OPT.metarepo2json.net_protocol
+    base_uri = hub.OPT.metarepo2json.github_api_netloc
+    uris = github_uris
+    branch = "1.4-release"
+    commit = "5932b921ba48f44e9c19d19301ae9448bb3fd912"
+    with pytest.raises(hub.metarepo2json.errors.GitServiceError):
+        get_api_uri(funtoo_stash_netlocs[0])
+    with pytest.raises(hub.metarepo2json.errors.GitHubRepoURIError):
+        get_api_uri(github_netlocs[0])
+    expected_results = [
+        f"{default_protocol}://{base_uri}/repos{github_repos[0]}/git/trees/{branch}",
+        f"{default_protocol}://{base_uri}/repos{github_repos[0]}/git/trees/{commit}",
+        f"{default_protocol}://{base_uri}/repos{github_repos[0]}/git/trees/{commit}",
+    ]
+    results = [
+        get_api_uri(uris[0], branch=branch),
+        get_api_uri(uris[0], commit=commit),
+        get_api_uri(uris[0], branch=branch, commit=commit),
+    ]
+    assert len(results) == len(expected_results)
+    for i, result in enumerate(results):
+        assert result == expected_results[i]
+
+
+def test_get_funtoo_stash_tree_uri(
+    get_funtoo_stash_tree_uri,
+    funtoo_stash_uris,
+    bitbucket_repos,
+    funtoo_stash_netlocs,
+    github_netlocs,
+):
+    get_api_uri = get_funtoo_stash_tree_uri
+    default_protocol = hub.OPT.metarepo2json.net_protocol
+    base_uri = hub.OPT.metarepo2json.funtoo_stash_api_netloc
+    uris = funtoo_stash_uris
+    branch = "1.4-release"
+    commit = "5932b921ba48f44e9c19d19301ae9448bb3fd912"
+    repo_path = str(Path(bitbucket_repos[0]).relative_to("/bitbucket"))
+    with pytest.raises(hub.metarepo2json.errors.GitServiceError):
+        get_api_uri(github_netlocs[0])
+    with pytest.raises(hub.metarepo2json.errors.FuntooStashRepoURIError):
+        get_api_uri(funtoo_stash_netlocs[0])
+        get_api_uri(f"{funtoo_stash_netlocs[0]}{invalid_funtoo_stash_paths}")
+    expected_results = [
+        f"{default_protocol}://{base_uri}/bitbucket/rest/api/1.0/{repo_path}/browse?at=refs%2Fheads%2F{branch}",
+        f"{default_protocol}://{base_uri}/bitbucket/rest/api/1.0/{repo_path}/browse?at=refs%2Fheads%2F{branch}",
+        f"{default_protocol}://{base_uri}/bitbucket/rest/api/1.0/{repo_path}/browse?at={commit}",
+        f"{default_protocol}://{base_uri}/bitbucket/rest/api/1.0/{repo_path}/browse?at={commit}",
+    ]
+    results = [
+        get_api_uri(uris[0], branch=branch),
+        get_api_uri(uris[2], branch=branch),
+        get_api_uri(uris[0], commit=commit),
+        get_api_uri(uris[0], branch=branch, commit=commit),
+    ]
+    assert len(results) == len(expected_results)
+    for i, result in enumerate(results):
+        assert result == expected_results[i]
+
+
+def test_get_ebuild_properties(get_ebuild_properties):
+    tested_ebuilds = [
+        mock_ebuild("brave-bin-1.9.37.ebuild"),
+        mock_ebuild("firefox-72.0.2.ebuild"),
+        mock_ebuild("xorg-cf-files-1.0.6-r1.ebuild"),
+    ]
+    expected_results = [
+        {
+            k: brave_bin.PACKAGE_INFO[k]
+            for k in ("description", "homepages", "licenses")
+        },
+        {k: firefox.PACKAGE_INFO[k] for k in ("description", "homepages", "licenses")},
+        {
+            k: xorg_cf_files.PACKAGE_INFO[k]
+            for k in ("description", "homepages", "licenses")
+        },
+    ]
+    assert get_ebuild_properties(tested_ebuilds[0]) == expected_results[0]
+    assert get_ebuild_properties(tested_ebuilds[1]) == expected_results[1]
+    assert get_ebuild_properties(tested_ebuilds[2]) == expected_results[2]
+
+
+def test_var_to_dict(var_to_dict):
+    test_var = 'LICENSE="a b" # a comment'
+    assert var_to_dict(test_var) == {"LICENSE": "a b"}

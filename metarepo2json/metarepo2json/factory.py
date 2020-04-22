@@ -26,6 +26,14 @@ def get_categories_instance(hub, source="fs"):
     return categories[source]
 
 
+def get_catpkgs_instance(hub, source="fs"):
+    catpkgs = {
+        "fs": hub.metarepo2json.catpkgs.catpkgs_fs.CatPkgsFromFileSystem(),
+        "web": hub.metarepo2json.catpkgs.catpkgs_web.CatPkgsFromWeb(),
+    }
+    return catpkgs[source]
+
+
 def get_schema(hub, schema) -> dict:
     schemas = {
         "kit": "kit.schema.json",

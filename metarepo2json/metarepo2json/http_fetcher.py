@@ -17,6 +17,6 @@ logging.getLogger("chardet.charsetprober").disabled = True
 async def fetch_html(hub, url: str, session: aiohttp.ClientSession, **kwargs) -> str:
     resp = await session.request(method="GET", url=url, **kwargs)
     resp.raise_for_status()
-    logger.info(f"Got response [{resp.status}] for URL: {url}")
+    logger.debug(f"Got response [{resp.status}] for URL: {url}")
     html = await resp.text()
     return html

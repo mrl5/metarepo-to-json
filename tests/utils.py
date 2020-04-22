@@ -16,7 +16,7 @@ hub.pop.sub.add(dyne_name="metarepo2json", omit_class=False)
 
 def mkdirs(tmpdir, subdirs):
     for d in subdirs:
-        Path.mkdir(tmpdir / d, parents=True)
+        Path.mkdir(tmpdir / d, parents=True, exist_ok=True)
 
 
 def touch(tmpdir, files):
@@ -113,6 +113,41 @@ def stub_kits(stub_metarepos):
     return kits
 
 
+@pytest.fixture(scope="session")
+def stub_packages(stub_kits):
+    file_path = Path(__file__).resolve()
+    ebuilds_path = file_path.parent.joinpath("mocks/ebuilds")
+    kits = stub_kits
+    www_client_ebuilds = [
+        "www-client/brave-bin/brave-bin-1.9.37.ebuild",
+        "www-client/firefox/firefox-70.0.1.ebuild",
+        "www-client/firefox/firefox-71.0-r1.ebuild",
+        "www-client/firefox/firefox-72.0.1.ebuild",
+        "www-client/firefox/firefox-72.0.2.ebuild",
+    ]
+    virtual_ebuilds = [
+        "virtual/xorg-cf-files/xorg-cf-files-1.0.6-r1.ebuild",
+        "virtual/iTeML/iTeML-2.6.ebuild",
+        "virtual/gjs/gjs-1.58.6.ebuild",
+        "virtual/jbuilder/jbuilder-1.0_beta14.ebuild",
+        "virtual/nicotine+/nicotine+-1.4.1-r1.ebuild",
+        "virtual/ppx_bench/ppx_bench-0.9.1.ebuild",
+        "virtual/w3m/w3m-0.ebuild",
+    ]
+    test_kit = kits["valid_kit"]
+    mkdirs(test_kit, [Path(ebuild).parent for ebuild in www_client_ebuilds])
+    mkdirs(test_kit, [Path(ebuild).parent for ebuild in virtual_ebuilds])
+    touch(test_kit, www_client_ebuilds)
+    touch(test_kit, virtual_ebuilds)
+    for ebuild in www_client_ebuilds:
+        with open(ebuilds_path / Path(ebuild).name) as f:
+            write([test_kit / ebuild], f.read())
+    for ebuild in virtual_ebuilds:
+        with open(ebuilds_path / Path(ebuild).name) as f:
+            write([test_kit / ebuild], f.read())
+    return test_kit
+
+
 @pytest.fixture(scope="function")
 def github_netlocs():
     return [
@@ -203,3 +238,11 @@ def invalid_git_service_uri():
 @pytest.fixture(scope="function")
 def get_schema():
     return hub.metarepo2json.factory.get_schema
+
+
+def mock_ebuild(filename):
+    file_path = Path(__file__).resolve()
+    ebuild_mocks = file_path.parent.joinpath("mocks/ebuilds")
+    with open(ebuild_mocks / filename) as f:
+        content = f.read()
+    return content
