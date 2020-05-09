@@ -45,7 +45,7 @@ class CategoriesFromFileSystem(CategoriesInterface):
             errmsg = "Invalid kit structure"
             raise InvalidStructureError(errmsg)
 
-    async def _load_data(self):
+    def _load_data(self):
         if self.commit is None:
             with open(self.categories_location) as f:
                 self.cat_list = f.read().splitlines()
@@ -71,9 +71,10 @@ class CategoriesFromFileSystem(CategoriesInterface):
     async def load_data(self, location=None, **kwargs):
         if location is not None:
             self.kit_location = location
+        self.commit = kwargs["commit"] if "commit" in kwargs else self.commit
         self._set_locations()
         self._throw_on_invalid_repo()
-        await self._load_data()
+        self._load_data()
         self._throw_on_corrupted_repo()
 
     async def process_data(self):
@@ -82,7 +83,7 @@ class CategoriesFromFileSystem(CategoriesInterface):
             categories.append(get_category(cat))
         self.categories = categories
 
-    async def get_result(self) -> dict:
+    async def get_result(self) -> list:
         if self.kit_location is None or self.categories_location is None:
             await self.load_data()
         if self.categories is None:

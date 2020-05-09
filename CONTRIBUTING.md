@@ -48,14 +48,13 @@ pytest
 
 ## Kit/Cat/Package does not provide all needed info
 Feel free to do a PR:
-1. So far not all information available in `ego kit` are present in [kits.schema.json]
-2. So far not all information available via `eix -nv -x -e <package> --xml` are
+1. So far not all information available via `eix -nv -x -e <package> --xml` are
    present in [package.schema.json]
 
 Next, what you will need to do is:
 1. Modify [JSON schema](metarepo2json/metarepo2json/schemas) (e.g. [kits.schema.json])
 2. Modify the code: perhaps only getter changes in `*_utils.py` file(s) (e.g.
-   for kits you will need to modify `get_kit()` in [kits utils])
+   for kits you will need to modify `get_kit()` in [utils])
 3. Run/modify unit tests
 4. For better example, study commit `bd287069701c82cc111b6b68521cf3f3b9ff91a5`
 
@@ -80,4 +79,4 @@ Make sure to write a unit tests, there are examples in `test_*.py` files from
 [funtoo-metatools]: https://code.funtoo.org/bitbucket/users/drobbins/repos/funtoo-metatools/browse
 [kits.schema.json]: metarepo2json/metarepo2json/schemas/kit.schema.json
 [package.schema.json]: metarepo2json/metarepo2json/schemas/package.schema.json
-[kits utils]: metarepo2json/metarepo2json/kits/utils.py
+[utils]: metarepo2json/metarepo2json/utils.py

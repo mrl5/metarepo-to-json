@@ -36,7 +36,7 @@ class KitsInterface(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def get_result(self) -> dict:
+    async def get_result(self) -> list:
         """Get meta-repo kits from the data set"""
         raise NotImplementedError
 
@@ -67,7 +67,7 @@ class CategoriesInterface(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def get_result(self) -> dict:
+    async def get_result(self) -> list:
         """Get meta-repo kits from the data set"""
         raise NotImplementedError
 

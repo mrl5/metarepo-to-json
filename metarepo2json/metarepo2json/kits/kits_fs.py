@@ -98,7 +98,7 @@ class KitsFromFileSystem(KitsInterface):
             kits.append(get_kit(kit_name, kit_settings, branches, kitsha1))
         self.kits = kits
 
-    async def get_result(self) -> dict:
+    async def get_result(self) -> list:
         if self.kitinfo is None or self.kitsha1 is None:
             await self.load_data()
         if self.kits is None:

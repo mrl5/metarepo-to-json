@@ -8,6 +8,7 @@ from metarepo2json.metarepo2json.interfaces import CategoriesInterface
 def __init__(hub):
     global HUB
     global categories_subpath
+    global commit
 
     global fetcher
     global get_raw_file_uri
@@ -15,6 +16,7 @@ def __init__(hub):
 
     HUB = hub
     categories_subpath = hub.OPT.metarepo2json.categories_subpath
+    commit = hub.OPT.metarepo2json.commit
 
     fetcher = hub.metarepo2json.http_fetcher.fetch_html
     get_raw_file_uri = hub.metarepo2json.utils.get_raw_file_uri
@@ -26,6 +28,7 @@ class CategoriesFromWeb(CategoriesInterface):
         self.hub = HUB
         self.fetch = fetcher
         self.kit_location = kit_location
+        self.commit = commit
         self.categories_subpath = categories_subpath
         self.categories_location = None
         self.cat_list = None
@@ -35,7 +38,7 @@ class CategoriesFromWeb(CategoriesInterface):
         if location is not None:
             self.kit_location = location
         self.categories_location = get_raw_file_uri(
-            self.kit_location, self.categories_subpath
+            self.kit_location, self.categories_subpath, commit=self.commit
         )
 
     def _set_session(self, session):
@@ -57,6 +60,7 @@ class CategoriesFromWeb(CategoriesInterface):
             raise ValueError("Malformed web content")
 
     async def load_data(self, location=None, **kwargs):
+        self.commit = kwargs["commit"] if "commit" in kwargs else self.commit
         session = kwargs["session"] if "session" in kwargs else None
         self._set_location(location)
         await self._load_data(session)
@@ -68,7 +72,7 @@ class CategoriesFromWeb(CategoriesInterface):
             categories.append(get_category(cat))
         self.categories = categories
 
-    async def get_result(self) -> dict:
+    async def get_result(self) -> list:
         if self.kit_location is None or self.categories_location is None:
             await self.load_data()
         if self.categories is None:

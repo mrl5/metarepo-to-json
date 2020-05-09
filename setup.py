@@ -9,7 +9,7 @@ setuptools.setup(
     author="mrl5",
     description="Funtoo meta-repo to JSON exporter",
     long_description=long_description,
-    long_description_content_type="text/x-rst",
+    long_description_content_type="text/markdown",
     url="https://github.com/mrl5/metarepo-to-json",
     scripts=[],
     classifiers=[

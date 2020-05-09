@@ -18,5 +18,4 @@ async def fetch_html(hub, url: str, session: aiohttp.ClientSession, **kwargs) ->
     resp = await session.request(method="GET", url=url, **kwargs)
     resp.raise_for_status()
     logger.debug(f"Got response [{resp.status}] for URL: {url}")
-    html = await resp.text()
-    return html
+    return await resp.text()
