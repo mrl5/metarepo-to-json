@@ -1,0 +1,110 @@
+{
+  "sha": "ba2ec9cdda1ab7d29185777d5d9f7b2488ae7390",
+  "url": "https://api.github.com/repos/funtoo/browser-kit/git/trees/ba2ec9cdda1ab7d29185777d5d9f7b2488ae7390",
+  "tree": [
+    {
+      "path": ".audit",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a51d08099e98baff21dfe888532b936ecf3236f8",
+      "size": 358,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/a51d08099e98baff21dfe888532b936ecf3236f8"
+    },
+    {
+      "path": "Manifest",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2624c971db7d9b978ba8ac44d935236821fdb23e",
+      "size": 155256,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/2624c971db7d9b978ba8ac44d935236821fdb23e"
+    },
+    {
+      "path": "files",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b1d1a667024fe71a4e8645e861dc482aa1a30fe6",
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/trees/b1d1a667024fe71a4e8645e861dc482aa1a30fe6"
+    },
+    {
+      "path": "firefox-66.0.4.ebuild",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0e8b59ce1bea9d8ae60608bf95cbdac5e3d4dadd",
+      "size": 24423,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/0e8b59ce1bea9d8ae60608bf95cbdac5e3d4dadd"
+    },
+    {
+      "path": "firefox-67.0.4.ebuild",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d19966469010ec34598f253318045cd55c80fd7c",
+      "size": 24511,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/d19966469010ec34598f253318045cd55c80fd7c"
+    },
+    {
+      "path": "firefox-68.1.0.ebuild",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d2ca2f5da566b9120b0cb2bdbb6198ec545fd97f",
+      "size": 24436,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/d2ca2f5da566b9120b0cb2bdbb6198ec545fd97f"
+    },
+    {
+      "path": "firefox-69.0.1.ebuild",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "52dfab5d47de1fa529ded3aa5293f96f1c880616",
+      "size": 24458,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/52dfab5d47de1fa529ded3aa5293f96f1c880616"
+    },
+    {
+      "path": "firefox-69.0.2.ebuild",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "52dfab5d47de1fa529ded3aa5293f96f1c880616",
+      "size": 24458,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/52dfab5d47de1fa529ded3aa5293f96f1c880616"
+    },
+    {
+      "path": "firefox-70.0.1.ebuild",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "16fc69e470c93a7e201712a0a0c66d5420cb00af",
+      "size": 25604,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/16fc69e470c93a7e201712a0a0c66d5420cb00af"
+    },
+    {
+      "path": "firefox-71.0-r1.ebuild",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c9a9130f84294b05539a00be92ae9ad45f2d42f9",
+      "size": 25595,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/c9a9130f84294b05539a00be92ae9ad45f2d42f9"
+    },
+    {
+      "path": "firefox-72.0.1.ebuild",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "789bfa81a335ab23accbd0da7d0808b499227510",
+      "size": 25607,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/789bfa81a335ab23accbd0da7d0808b499227510"
+    },
+    {
+      "path": "firefox-72.0.2.ebuild",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "789bfa81a335ab23accbd0da7d0808b499227510",
+      "size": 25607,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/789bfa81a335ab23accbd0da7d0808b499227510"
+    },
+    {
+      "path": "metadata.xml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2d7503a1a8c893d2c19b5b48f3c03a49bd212b7e",
+      "size": 2540,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/2d7503a1a8c893d2c19b5b48f3c03a49bd212b7e"
+    }
+  ],
+  "truncated": false
+}

@@ -1,0 +1,72 @@
+{
+  "sha": "5932b921ba48f44e9c19d19301ae9448bb3fd912",
+  "url": "https://api.github.com/repos/funtoo/browser-kit/git/trees/5932b921ba48f44e9c19d19301ae9448bb3fd912",
+  "tree": [
+    {
+      "path": "COPYRIGHT.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1cf521250cf4fc96149354a98473cef0e3ac75c6",
+      "size": 210,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/1cf521250cf4fc96149354a98473cef0e3ac75c6"
+    },
+    {
+      "path": "LICENSE.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d159169d1050894d3ea3b98e1c965c4058208fe1",
+      "size": 18092,
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/blobs/d159169d1050894d3ea3b98e1c965c4058208fe1"
+    },
+    {
+      "path": "dev-lang",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c072e9c71da7ca9d92a26801a1d4bd72b5ebe002",
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/trees/c072e9c71da7ca9d92a26801a1d4bd72b5ebe002"
+    },
+    {
+      "path": "licenses",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "027f8221051c50c4fcd5a570c886d3ddd48b561f",
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/trees/027f8221051c50c4fcd5a570c886d3ddd48b561f"
+    },
+    {
+      "path": "metadata",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "b055f979cfd82d85b66b60c8db4e3edf685a97b7",
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/trees/b055f979cfd82d85b66b60c8db4e3edf685a97b7"
+    },
+    {
+      "path": "profiles",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "886994100788501be464a4675b1ad1effecd4378",
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/trees/886994100788501be464a4675b1ad1effecd4378"
+    },
+    {
+      "path": "virtual",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "2d8228af53e4f6d473267b910e8d084b78ed64ce",
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/trees/2d8228af53e4f6d473267b910e8d084b78ed64ce"
+    },
+    {
+      "path": "www-client",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "04eb725f50c46031116df312c634eb767ba1b718",
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/trees/04eb725f50c46031116df312c634eb767ba1b718"
+    },
+    {
+      "path": "www-plugins",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "90c13d199a2176d75d68154e24b1ebcdd1c41d5f",
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/trees/90c13d199a2176d75d68154e24b1ebcdd1c41d5f"
+    }
+  ],
+  "truncated": false
+}

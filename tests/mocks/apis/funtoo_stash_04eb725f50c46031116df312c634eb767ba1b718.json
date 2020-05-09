@@ -1,0 +1,1 @@
+{"path": {"components": [], "name": "", "toString": ""}, "revision": "04eb725f50c46031116df312c634eb767ba1b718", "children": {"size": 1, "limit": 500, "isLastPage": true, "values": [{"path": {"components": ["firefox"], "parent": "", "name": "firefox", "toString": "firefox"}, "node": "ba2ec9cdda1ab7d29185777d5d9f7b2488ae7390", "type": "DIRECTORY"}], "start": 0}}

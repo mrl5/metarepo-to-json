@@ -1,0 +1,14 @@
+{
+  "sha": "04eb725f50c46031116df312c634eb767ba1b718",
+  "url": "https://api.github.com/repos/funtoo/browser-kit/git/trees/04eb725f50c46031116df312c634eb767ba1b718",
+  "tree": [
+    {
+      "path": "firefox",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "ba2ec9cdda1ab7d29185777d5d9f7b2488ae7390",
+      "url": "https://api.github.com/repos/funtoo/browser-kit/git/trees/ba2ec9cdda1ab7d29185777d5d9f7b2488ae7390"
+    }
+  ],
+  "truncated": false
+}
