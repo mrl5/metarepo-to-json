@@ -5,7 +5,7 @@ with open("README.md", "r") as readme:
 
 setuptools.setup(
     name="metarepo2json",
-    version="1.0.0-SNAPSHOT",
+    version="1.0.0",
     author="mrl5",
     description="Funtoo meta-repo to JSON exporter",
     long_description=long_description,
