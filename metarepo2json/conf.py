@@ -1,4 +1,8 @@
 CONFIG = {
+    "output_dir": {
+        "default": "metarepo_dump",
+        "help": "Directory where output files will be written",
+    },
     "data_source": {"default": "fs", "help": "Storage medium"},
     "repo_fs": {"default": "/var/git/meta-repo", "help": "Location in filesystem"},
     "repo_web": {
@@ -49,14 +53,15 @@ CONFIG = {
 }
 
 CLI_CONFIG = {
-    "data_source": {"options": ["-s", "--source"], "os": "DATA_SOURCE", "type": str},
-    "repo_fs": {
-        "options": ["-fs", "--file-system"],
-        "os": "FS_LOCATION",
+    "output_dir": {
+        "options": ["-o", "--output-dir"],
+        "os": "OUTPUT_DIR",
         "type": str,
         "nargs": "?",
         "positional": True,
     },
+    "data_source": {"options": ["-s", "--source"], "os": "DATA_SOURCE", "type": str},
+    "repo_fs": {"options": ["-fs", "--file-system"], "os": "FS_LOCATION", "type": str,},
     "repo_web": {"options": ["-w", "--web"], "os": "WEB_LOCATION", "type": str},
     "branch": {"options": ["-b"], "os": "BRANCH", "type": str},
     "commit": {"options": ["-c"], "os": "COMMIT", "type": str},
