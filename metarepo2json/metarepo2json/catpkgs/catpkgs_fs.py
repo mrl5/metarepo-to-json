@@ -121,7 +121,7 @@ class CatPkgsFromFileSystem(CatPkgsInterface):
         self._load_data(branch, commit)
 
     def _process_catpkg(self, catpkg):
-        versions = list(map(lambda x: get_ebuild_version(x["name"]), catpkg["ebuilds"]))
+        versions = list(map(lambda x: get_ebuild_version(catpkg["name"], x["name"]), catpkg["ebuilds"]))
         if "commit" in catpkg and catpkg["commit"] is not None:
             subpath = str(catpkg["ebuilds"].pop()["path"].relative_to(self.kit_location))
             ebuild = get_fs_file_from_commit(
