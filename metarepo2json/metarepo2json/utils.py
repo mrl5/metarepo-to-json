@@ -235,8 +235,13 @@ def get_funtoo_stash_tree_uri(hub, repo_uri: str, **kwargs) -> str:
     return f"{default_protocol}://{base_uri}/bitbucket/rest/api/1.0/{path}/browse?{qs}"
 
 
-def get_ebuild_version(hub, ebuild: str) -> str:
-    return match(r"([A-Za-z0-9_+]+-)+([0-9a-z-._]+)(\.ebuild)", ebuild).group(2)
+def escape_regex_special_chars(string: str) -> str:
+    return string.replace('+', '\+')
+
+
+def get_ebuild_version(hub, catpkg_name: str, ebuild: str) -> str:
+    escaped_name = escape_regex_special_chars(catpkg_name)
+    return match(rf"({escaped_name})-(.+)(\.ebuild)", ebuild).group(2)
 
 
 def get_ebuild_properties(hub, ebuild: list) -> dict:

@@ -65,6 +65,11 @@ def get_ebuild_properties():
     return hub.metarepo2json.utils.get_ebuild_properties
 
 
+@pytest.fixture(scope="function")
+def get_ebuild_version():
+    return hub.metarepo2json.utils.get_ebuild_version
+
+
 def test_is_github(github_netlocs, funtoo_stash_netlocs):
     valid_netlocs = github_netlocs
     invalid_netlocs = funtoo_stash_netlocs
@@ -346,6 +351,28 @@ def test_get_ebuild_properties(get_ebuild_properties):
     assert get_ebuild_properties(tested_ebuilds[0]) == expected_results[0]
     assert get_ebuild_properties(tested_ebuilds[1]) == expected_results[1]
     assert get_ebuild_properties(tested_ebuilds[2]) == expected_results[2]
+
+
+def test_get_ebuild_version(get_ebuild_version):
+    tested_ebuilds = [
+        {"name": "brave-bin", "ebuild": "brave-bin-1.9.37.ebuild"},
+        {"name": "firefox", "ebuild": "firefox-72.0.2.ebuild"},
+        {"name": "xorg-cf-files", "ebuild": "xorg-cf-files-1.0.6-r1.ebuild"},
+        {"name": "dracut", "ebuild": "dracut-044-r1.ebuild"},
+    ]
+    expected_results = ["1.9.37", "72.0.2", "1.0.6-r1", "044-r1"]
+
+    name, ebuild = [tested_ebuilds[0]["name"], tested_ebuilds[0]["ebuild"]]
+    assert get_ebuild_version(name, ebuild) == expected_results[0]
+
+    name, ebuild = [tested_ebuilds[1]["name"], tested_ebuilds[1]["ebuild"]]
+    assert get_ebuild_version(name, ebuild) == expected_results[1]
+
+    name, ebuild = [tested_ebuilds[2]["name"], tested_ebuilds[2]["ebuild"]]
+    assert get_ebuild_version(name, ebuild) == expected_results[2]
+
+    name, ebuild = [tested_ebuilds[3]["name"], tested_ebuilds[3]["ebuild"]]
+    assert get_ebuild_version(name, ebuild) == expected_results[3]
 
 
 def test_var_to_dict(var_to_dict):

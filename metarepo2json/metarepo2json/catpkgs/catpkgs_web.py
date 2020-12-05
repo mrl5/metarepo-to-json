@@ -205,7 +205,7 @@ class CatPkgsFromWeb(CatPkgsInterface):
         await self._load_data(branch, commit)
 
     async def _process_catpkg(self, catpkg):
-        versions = list(map(lambda x: get_ebuild_version(x["name"]), catpkg["ebuilds"]))
+        versions = list(map(lambda x: get_ebuild_version(catpkg["name"], x["name"]), catpkg["ebuilds"]))
         uri = catpkg["ebuilds"].pop()["uri"]
         if is_github_api_blob(uri):
             headers = {"accept": "application/vnd.github.v3.raw"}

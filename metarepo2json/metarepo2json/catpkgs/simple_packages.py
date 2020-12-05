@@ -16,14 +16,17 @@ def get_fs_packages(hub, path):
             files = leafs[2]
             ebuilds = list(filter(lambda x: x.endswith(".ebuild"), files))
             if len(ebuilds) > 0:
-                versions = list(map(lambda x: get_ebuild_version(x), ebuilds))
                 path = leafs[0]
                 with open(Path(path).joinpath(ebuilds[0])) as f:
                     ebuild = f.read()
+                catpkg_name = Path(path).name
                 properties = get_ebuild_properties(ebuild)
+                versions = list(
+                    map(lambda x: get_ebuild_version(catpkg_name, x), ebuilds)
+                )
                 packages.append(
                     get_package(
-                        Path(path).name,
+                        catpkg_name,
                         versions,
                         description=properties["description"],
                         homepages=properties["homepages"],
