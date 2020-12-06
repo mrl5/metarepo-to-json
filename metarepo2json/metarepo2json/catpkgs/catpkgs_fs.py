@@ -116,8 +116,12 @@ class CatPkgsFromFileSystem(CatPkgsInterface):
     async def load_data(self, location=None, category=None, **kwargs):
         branch = kwargs["branch"] if "branch" in kwargs else self.hub.OPT.metarepo2json.branch
         commit = kwargs["commit"] if "commit" in kwargs else self.hub.OPT.metarepo2json.commit
-        self._set_location(location)
-        self._set_category(category)
+        if category is not None:
+            self.category = category
+        if location is not None:
+            self.kit_location = location
+        self._set_location(self.kit_location)
+        self._set_category(self.category)
         self._load_data(branch, commit)
 
     def _process_catpkg(self, catpkg):

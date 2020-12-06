@@ -23,8 +23,7 @@ branch = hub.OPT.metarepo2json.branch
 async def print_catpkgs(instance):
     catpkgs = None
     if type(instance) is hub.metarepo2json.catpkgs.catpkgs_fs.CatPkgsFromFileSystem:
-        kit_path = hub.OPT.metarepo2json.repo_fs
-        await instance.load_data(kit_path, category, branch=branch)
+        await instance.load_data(category=category, branch=branch)
     if type(instance) is hub.metarepo2json.catpkgs.catpkgs_web.CatPkgsFromWeb:
         uri = hub.OPT.metarepo2json.repo_web
         conn = TCPConnector(limit=10)
@@ -51,8 +50,9 @@ def exit_on_invalid_source(source):
 
 if __name__ == "__main__":
     source = hub.OPT.metarepo2json.data_source
+    kit = hub.OPT.metarepo2json.kit
     exit_on_invalid_source(source)
-    instance = hub.metarepo2json.factory.get_catpkgs_instance(source)
+    instance = hub.metarepo2json.factory.get_catpkgs_instance(kit=kit, source=source)
     expected_errors = [
         hub.metarepo2json.errors.InvalidStructureError,
         hub.metarepo2json.errors.CorruptedKitError,

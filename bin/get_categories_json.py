@@ -28,8 +28,7 @@ async def print_categories(instance):
         type(instance)
         is hub.metarepo2json.categories.categories_fs.CategoriesFromFileSystem
     ):
-        path = hub.OPT.metarepo2json.repo_fs
-        await instance.load_data(path)
+        await instance.load_data()
         await instance.process_data()
     if type(instance) is hub.metarepo2json.categories.categories_web.CategoriesFromWeb:
         uri = hub.OPT.metarepo2json.repo_web
@@ -47,8 +46,9 @@ def exit_on_invalid_source(source):
 
 if __name__ == "__main__":
     source = hub.OPT.metarepo2json.data_source
+    kit = hub.OPT.metarepo2json.kit
     exit_on_invalid_source(source)
-    instance = hub.metarepo2json.factory.get_categories_instance(source)
+    instance = hub.metarepo2json.factory.get_categories_instance(kit=kit, source=source)
     expected_errors = [
         hub.metarepo2json.errors.InvalidStructureError,
         hub.metarepo2json.errors.CorruptedKitError,
@@ -63,6 +63,6 @@ if __name__ == "__main__":
             sys.exit(1)
     except Exception as e:
         if type(e) in expected_errors:
-            sys.exit(str(e))
+            sys.exit(f"{type(e).__name__}: {str(e)}")
         else:
             raise e
