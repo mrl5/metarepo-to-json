@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+import aiofiles
+
 from metarepo2json.metarepo2json.interfaces import CategoriesInterface
 
 
@@ -45,10 +47,10 @@ class CategoriesFromFileSystem(CategoriesInterface):
             errmsg = "Invalid kit structure"
             raise InvalidStructureError(errmsg)
 
-    def _load_data(self):
+    async def _load_data(self):
         if self.commit is None:
-            with open(self.categories_location) as f:
-                self.cat_list = f.read().splitlines()
+            async with aiofiles.open(self.categories_location) as f:
+                self.cat_list = (await f.read()).splitlines()
         else:
             self.cat_list = get_fs_file_from_commit(
                 self.kit_location, self.commit, self.categories_subpath
@@ -74,7 +76,7 @@ class CategoriesFromFileSystem(CategoriesInterface):
         self.commit = kwargs["commit"] if "commit" in kwargs else self.commit
         self._set_locations()
         self._throw_on_invalid_repo()
-        self._load_data()
+        await self._load_data()
         self._throw_on_corrupted_repo()
 
     async def process_data(self):
