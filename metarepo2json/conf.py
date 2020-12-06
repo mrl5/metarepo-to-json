@@ -5,6 +5,7 @@ CONFIG = {
     },
     "data_source": {"default": "fs", "help": "Storage medium"},
     "repo_fs": {"default": "/var/git/meta-repo", "help": "Location in filesystem"},
+    "kit": {"default": "core-kit", "help": "Kit name"},
     "repo_web": {
         "default": "https://github.com/funtoo/meta-repo",
         "help": "Location in web",
@@ -53,15 +54,16 @@ CONFIG = {
 }
 
 CLI_CONFIG = {
-    "output_dir": {
-        "options": ["-o", "--output-dir"],
-        "os": "OUTPUT_DIR",
+    "output_dir": {"options": ["-o", "--output-dir"], "os": "OUTPUT_DIR", "type": str,},
+    "data_source": {"options": ["-s", "--source"], "os": "DATA_SOURCE", "type": str},
+    "kit": {"options": ["-k", "--kit"], "os": "KIT", "type": str},
+    "repo_fs": {
+        "options": ["-fs", "--file-system"],
+        "os": "FS_LOCATION",
         "type": str,
         "nargs": "?",
         "positional": True,
     },
-    "data_source": {"options": ["-s", "--source"], "os": "DATA_SOURCE", "type": str},
-    "repo_fs": {"options": ["-fs", "--file-system"], "os": "FS_LOCATION", "type": str,},
     "repo_web": {"options": ["-w", "--web"], "os": "WEB_LOCATION", "type": str},
     "branch": {"options": ["-b"], "os": "BRANCH", "type": str},
     "commit": {"options": ["-c"], "os": "COMMIT", "type": str},

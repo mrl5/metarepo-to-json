@@ -18,17 +18,31 @@ def get_kits_instance(hub, source="fs"):
     return kits[source]
 
 
-def get_categories_instance(hub, source="fs"):
+def get_categories_instance(hub, kit=None, source="fs"):
+    path = (
+        (Path(hub.OPT.metarepo2json.repo_fs) / hub.OPT.metarepo2json.kits_subpath / kit)
+        if source == "fs"
+        else None
+    )
     categories = {
-        "fs": hub.metarepo2json.categories.categories_fs.CategoriesFromFileSystem(),
+        "fs": hub.metarepo2json.categories.categories_fs.CategoriesFromFileSystem(
+            kit_location=path
+        ),
         "web": hub.metarepo2json.categories.categories_web.CategoriesFromWeb(),
     }
     return categories[source]
 
 
-def get_catpkgs_instance(hub, source="fs"):
+def get_catpkgs_instance(hub, kit=None, source="fs"):
+    path = (
+        (Path(hub.OPT.metarepo2json.repo_fs) / hub.OPT.metarepo2json.kits_subpath / kit)
+        if source == "fs"
+        else None
+    )
     catpkgs = {
-        "fs": hub.metarepo2json.catpkgs.catpkgs_fs.CatPkgsFromFileSystem(),
+        "fs": hub.metarepo2json.catpkgs.catpkgs_fs.CatPkgsFromFileSystem(
+            kit_location=path
+        ),
         "web": hub.metarepo2json.catpkgs.catpkgs_web.CatPkgsFromWeb(),
     }
     return catpkgs[source]
