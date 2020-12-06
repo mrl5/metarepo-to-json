@@ -3,6 +3,8 @@
 import json
 from pathlib import Path
 
+import aiofiles
+
 from metarepo2json.metarepo2json.interfaces import KitsInterface
 
 
@@ -53,10 +55,10 @@ class KitsFromFileSystem(KitsInterface):
 
     async def _load_data(self):
         if self.commit is None:
-            with open(self.kitinfo_location) as f:
-                self.kitinfo = json.load(f)
-            with open(self.kitsha1_location) as f:
-                self.kitsha1 = json.load(f)
+            async with aiofiles.open(self.kitinfo_location) as f:
+                self.kitinfo = json.loads(await f.read())
+            async with aiofiles.open(self.kitsha1_location) as f:
+                self.kitsha1 = json.loads(await f.read())
         else:
             self.kitinfo = json.loads(
                 get_fs_file_from_commit(

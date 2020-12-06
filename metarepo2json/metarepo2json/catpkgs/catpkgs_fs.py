@@ -3,6 +3,7 @@
 from os import walk
 from pathlib import Path
 
+import aiofiles
 from git import Repo
 
 from metarepo2json.metarepo2json.interfaces import CatPkgsInterface
@@ -124,7 +125,7 @@ class CatPkgsFromFileSystem(CatPkgsInterface):
         self._set_category(self.category)
         self._load_data(branch, commit)
 
-    def _process_catpkg(self, catpkg):
+    async def _process_catpkg(self, catpkg):
         versions = list(map(lambda x: get_ebuild_version(catpkg["name"], x["name"]), catpkg["ebuilds"]))
         if "commit" in catpkg and catpkg["commit"] is not None:
             subpath = str(catpkg["ebuilds"].pop()["path"].relative_to(self.kit_location))
@@ -133,8 +134,8 @@ class CatPkgsFromFileSystem(CatPkgsInterface):
             )
         else:
             path = catpkg["ebuilds"].pop()["path"]
-            with open(path) as f:
-                ebuild = f.read()
+            async with aiofiles.open(path) as f:
+                ebuild = await f.read()
         properties = get_ebuild_properties(ebuild)
         return get_package(
             catpkg["name"],
@@ -148,7 +149,7 @@ class CatPkgsFromFileSystem(CatPkgsInterface):
         catpkgs = []
         if self._raw_catpkgs is None:
             raise ValueError("no data is loaded")
-        catpkgs = [self._process_catpkg(catpkg) for catpkg in self._raw_catpkgs]
+        catpkgs = [await self._process_catpkg(catpkg) for catpkg in self._raw_catpkgs]
         self.catpkgs = sorted(catpkgs, key=lambda x: x["name"])
 
     async def get_result(self) -> list:
